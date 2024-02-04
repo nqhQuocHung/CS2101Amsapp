@@ -21,6 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('ams.urls')),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
-    path('o/', include('oauth2_provider.urls',
-                       namespace='oauth2_provider')),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]

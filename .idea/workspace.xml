@@ -5,30 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9d5df22f-1058-4bed-9643-b503cabee151" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/CS2101Amsapp.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/migrations/0001_initial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/migrations/0002_remove_user_account_status_and_more.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/serializers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/ams/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/amsapp/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/amsapp/asgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/amsapp/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/amsapp/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/amsapp/wsgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/manage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/amsapp/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amsapp/ams/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/ams/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amsapp/ams/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/ams/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amsapp/ams/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/ams/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amsapp/ams/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/ams/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amsapp/amsapp/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/amsapp/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amsapp/amsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/amsapp/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

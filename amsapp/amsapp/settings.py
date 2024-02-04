@@ -55,11 +55,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-ROOT_URLCONF = 'amsapp.urls'
-import cloudinary
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
 
+ROOT_URLCONF = 'amsapp.urls'
+
+import cloudinary
 cloudinary.config(
     cloud_name="dcnvpuvq5",
     api_key="265516843643197",
@@ -142,3 +149,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+OAUTH2_PROVIDER = {
+    'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
+}
+CLIENT_ID = 'J0krPOSrNKZuZMHT50q6kzQ5zfJlMYNnjgLmLwNU'
+CLIENT_SECRET = 'pbkdf2_sha256$720000$rToJIQae7uMIBoWHJ7WA7W$dgnkPtYi9r51EUCchJTHlmniS915DmWpX8leZo60P2I='

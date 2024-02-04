@@ -23,7 +23,7 @@ class User(AbstractUser):
         if not self.pk and self.role == 'lecturer':  # Kiểm tra nếu là tài khoản mới và là giảng viên
             self.set_password(settings.PASSWORD_LECTURER_DEFAULT)  # Đặt mật khẩu mặc định
         super().save(*args, **kwargs)
-        if self.role == 'alumni' and not self.student_id:
+        if self.role == 'alumni' and not self.student_id and not self.is_superuser:
             raise ValueError("Student ID is required for alumni")
         super().save(*args, **kwargs)
 
