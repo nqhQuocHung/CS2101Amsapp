@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'cloudinary',
-    'debug_toolbar',
     'rest_framework',
     'drf_yasg',
     'oauth2_provider',
@@ -56,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'ams.middleware.PasswordChangeLecturerMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -65,6 +65,15 @@ REST_FRAMEWORK = {
 }
 
 ROOT_URLCONF = 'amsapp.urls'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'hungmt2426@gmail.com'
+EMAIL_HOST_PASSWORD = '2410Quochung.@'
+
 
 import cloudinary
 cloudinary.config(
@@ -150,8 +159,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-OAUTH2_PROVIDER = {
-    'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
-}
-CLIENT_ID = 'J0krPOSrNKZuZMHT50q6kzQ5zfJlMYNnjgLmLwNU'
-CLIENT_SECRET = 'pbkdf2_sha256$720000$rToJIQae7uMIBoWHJ7WA7W$dgnkPtYi9r51EUCchJTHlmniS915DmWpX8leZo60P2I='
+
+CLIENT_ID = 'jhD8Z2VwzubfUZmsWe4bdvehT0gFTNoaiyZaBNiF'
+CLIENT_SECRET = 'H3LOa98ryAJ6SPtfclzi9WpU9xO9dosOj8JnCcGSc5Fjqc0Q3QNjvtTynYorKfIhLdwfI0ylWdja6FHyZ38sBiJijAvgzqN1gl1wwY3L5Js1IbQKNhZpEqzhLtJ6ZqNS'

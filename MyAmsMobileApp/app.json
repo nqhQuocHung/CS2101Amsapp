@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "MyAmsMobileApp",
+    "slug": "MyAmsMobileApp",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "MyAmsMobileApp"
+}

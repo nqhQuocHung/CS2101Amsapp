@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9d5df22f-1058-4bed-9643-b503cabee151" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/amsapp/ams/middleware.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/amsapp/ams/signal.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/amsapp/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/amsapp/ams/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/ams/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/amsapp/ams/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/ams/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amsapp/ams/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/ams/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/amsapp/ams/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/ams/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/amsapp/amsapp/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/amsapp/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/amsapp/amsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/amsapp/amsapp/urls.py" afterDir="false" />
@@ -42,13 +44,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "D:/HK1-3/Amsapp/amsapp"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
