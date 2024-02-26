@@ -1,5 +1,6 @@
 
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, status, viewsets, generics
 from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
@@ -13,7 +14,7 @@ import json
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAdminUser
