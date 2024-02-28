@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'oauth2_provider',
     'corsheaders',
+
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,7 +73,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'hungmt2426@gmail.com'
-EMAIL_HOST_PASSWORD = '2410Quochung.@'
+EMAIL_HOST_PASSWORD = 'viohxnfiiuhsmysy'
 
 
 import cloudinary

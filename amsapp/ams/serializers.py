@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from.models import Post, Comment, Reaction, Survey, SurveyResponse, Notification, Group, GroupMember, Statistic, EmailQueue, Question, Choice
-
+from django.conf import settings
 User = get_user_model()
 
 
@@ -11,21 +11,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'role', 'student_id', 'avatar', 'cover_image', 'is_verified')
+        fields = ('username', 'email', 'password', 'role', 'student_id', 'first_name', 'last_name', 'avatar', 'cover_image','is_verified')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password'],
-            role=validated_data['role'],
-            student_id=validated_data['student_id'],
-            avatar=validated_data['avatar'],
-            cover_image=validated_data['cover_image'],
-            is_verified=False  # Tùy vào logic xác thực của bạn
-        )
+        user = User(**validated_data)
+        user.set_password(validated_data['password'])
         user.save()
+
         return user
 
 

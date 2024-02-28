@@ -34,7 +34,7 @@ class LoginView(TokenView):
         role = data.get("role")
         user = authenticate(username=username, password=password)
         if user and user.role == role:
-            if role == "alumni" and not user.is_verified:
+            if role == 'alumni' and not user.is_verified:
                 return HttpResponse(content="Tài khoản alumni chưa được xác thực", status=status.HTTP_401_UNAUTHORIZED)
             request.POST = request.POST.copy()
             # pdb.set_trace()
@@ -58,28 +58,27 @@ class UserViewSet(viewsets.GenericViewSet):
     def get_permissions(self):
         if self.action == "change_password" or self.action == "add_post":
             return [permissions.IsAuthenticated()]
-        if self.action == "verify" or self.action == "add_survey" or self.action == "create_lecturer":
+        if self.action == "verify" or self.action == "add_survey":
             return [permissions.IsAdminUser()]
+        if self.action == "create":
+            # Lấy dữ liệu từ request.
+            data = self.request.data
+
+            # Tạo một instance của serializer với dữ liệu được cung cấp.
+            serializer = self.get_serializer(data=data)
+
+            # Kiểm tra dữ liệu có hợp lệ không.
+            if serializer.is_valid(raise_exception=False):
+                # Kiểm tra giá trị của role từ dữ liệu đã được validate.
+                if serializer.validated_data.get('role') == "lecturer":
+                    return [permissions.IsAdminUser()]
         return super().get_permissions()  # sử dụng permissions mặc định cho các action khác
-
-    @action(detail=False, methods=['post'], url_path='create-lecturer')
-    def create_lecturer(self, request):
-        # Tạo tài khoản giảng viên
-        lecturer_data = request.data.copy()
-        lecturer_data['role'] = 'lecturer'  # Đặt vai trò là giảng viên
-        serializer = self.get_serializer(data=lecturer_data)
-        if serializer.is_valid():
-            lecturer = serializer.save()
-            signal.send_email_to_lecturer(lecturer.email)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Cựu sinh viên đã đăng ký thành công!"}, status=status.HTTP_201_CREATED)
+            return Response({"Đăng ký thành công!"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -100,7 +99,8 @@ class UserViewSet(viewsets.GenericViewSet):
     def verify(self, request, pk=None):
         user = self.get_object()
         user.is_verified = True
-        user.save()
+        if user.save():
+            signal.send_mail_confirmation()
         return Response({"message": "User has been verified successfully!"}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
@@ -355,9 +355,3 @@ class StatsViewSet(viewsets.ViewSet):
             })
 
         return stats_data
-
-
-
-
-
-
