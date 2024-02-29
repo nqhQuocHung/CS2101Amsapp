@@ -2,7 +2,7 @@
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions, status, viewsets, generics
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action, permission_classes, api_view
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from .serializers import (UserSerializer, PostSerializer, PasswordSerializer, CommentSerializer
@@ -33,12 +33,20 @@ class LoginView(TokenView):
         password = data.get("password")
         role = data.get("role")
         user = authenticate(username=username, password=password)
+
         if user and user.role == role:
+            # if user.role == 'lecturer' and not user.password_change:
+            #     # Kiểm tra nếu user đã được tạo trong vòng 24 giờ
+            #     if user.created_at and datetime.now() - user.created_at >= datetime.timedelta(hours=24):
+            #         # Cập nhật trường is_active thành False
+            #         user.is_active = False
+            #         user.save()
             if role == 'alumni' and not user.is_verified:
                 return HttpResponse(content="Tài khoản alumni chưa được xác thực", status=status.HTTP_401_UNAUTHORIZED)
             request.POST = request.POST.copy()
             # pdb.set_trace()
-
+            if not user.is_active:
+                return HttpResponse(content="Tài khoan của ban bị khóa, vui lòng liên hệ quản trị viên để mở khóa!", status=status.HTTP_400_BAD_REQUEST)
             # Add application credientials
             request.POST.update({
                 'grant_type': 'password',
@@ -58,7 +66,7 @@ class UserViewSet(viewsets.GenericViewSet):
     def get_permissions(self):
         if self.action == "change_password" or self.action == "add_post":
             return [permissions.IsAuthenticated()]
-        if self.action == "verify" or self.action == "add_survey":
+        if self.action == "verify" or self.action == "add_survey" or self.action == "unverified_alumni":
             return [permissions.IsAdminUser()]
         if self.action == "create":
             # Lấy dữ liệu từ request.
@@ -103,10 +111,23 @@ class UserViewSet(viewsets.GenericViewSet):
             signal.send_mail_confirmation()
         return Response({"message": "User has been verified successfully!"}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    # @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    # def add_post(self, request, pk=None):
+    #     # Lấy người dùng hiện tại từ request
+    #     user = self.get_object()
+    #
+    #     # Tạo serializer với dữ liệu từ request và đặt người dùng hiện tại làm 'user' cho bài viết
+    #     serializer = PostSerializer(data=request.data, context={'request': request})
+    #     if serializer.is_valid():
+    #         serializer.save(user=user)
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     else:
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['post'], detail=True)
     def add_post(self, request, pk=None):
-        # Lấy người dùng hiện tại từ request
-        user = self.get_object()
+        # Lấy người dùng hiện tại từ request (người dùng đang đăng nhập)
+        user = request.user
 
         # Tạo serializer với dữ liệu từ request và đặt người dùng hiện tại làm 'user' cho bài viết
         serializer = PostSerializer(data=request.data, context={'request': request})
@@ -116,12 +137,16 @@ class UserViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=['get'], detail=True)
-    def list_posts(self, request, pk=None):
-        user = self.get_object()
+    @action(methods=['get'], detail=False)
+    def list_posts(self, request):
+        # Lấy người dùng hiện tại từ request (người dùng đang đăng nhập)
+        user = request.user
+        # Lọc các bài viết của người dùng hiện tại
         posts = Post.objects.filter(user=user)
+        # Serialize danh sách bài viết
         serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
+        # Trả về response chứa danh sách bài viết
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=['post'], url_path='surveys', detail=False)
     def add_survey(self, request):

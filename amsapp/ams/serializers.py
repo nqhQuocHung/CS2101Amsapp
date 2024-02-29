@@ -44,15 +44,15 @@ class ReactionSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     reactions = ReactionSerializer(many=True, read_only=True)
+    images = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Post
         fields = ['id', 'user', 'images', 'created_at', 'content', 'comments', 'reactions']
 
     def create(self, validated_data):
-        # Thêm người dùng hiện tại vào dữ liệu đã xác thực trước khi tạo Post
-        validated_data['user'] = self.context['request'].user
-        return super().create(validated_data)
+        # Tạo một bài viết mới với dữ liệu đã được xác nhận
+        return Post.objects.create(**validated_data)
 
 
 class SurveySerializer(serializers.ModelSerializer):

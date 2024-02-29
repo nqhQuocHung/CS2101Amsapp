@@ -56,7 +56,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'ams.middleware.PasswordChangeLecturerMiddleware',
+    'ams.middleware.LecturerPasswordChangeMiddleware',
+
+
 ]
 
 REST_FRAMEWORK = {
