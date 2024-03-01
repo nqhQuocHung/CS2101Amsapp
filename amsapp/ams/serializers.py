@@ -45,6 +45,7 @@ class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     reactions = ReactionSerializer(many=True, read_only=True)
     images = serializers.ImageField(use_url=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Post
@@ -59,6 +60,12 @@ class SurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
         fields = '__all__'
+
+    def create(self, validated_data):
+        survey = Survey(**validated_data)
+        survey.save()
+
+        return survey
 
 
 class SurveyResponseSerializer(serializers.ModelSerializer):
@@ -97,7 +104,7 @@ class EmailQueueSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PasswordSerializer(serializers.ModelSerializer):
+class PasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 

@@ -46,7 +46,7 @@ class LoginView(TokenView):
             request.POST = request.POST.copy()
             # pdb.set_trace()
             if not user.is_active:
-                return HttpResponse(content="Tài khoan của ban bị khóa, vui lòng liên hệ quản trị viên để mở khóa!", status=status.HTTP_400_BAD_REQUEST)
+                return HttpResponse(content="Tài khoản của bạn bị khóa, vui lòng liên hệ quản trị viên để mở khóa!", status=status.HTTP_400_BAD_REQUEST)
             # Add application credientials
             request.POST.update({
                 'grant_type': 'password',
@@ -66,7 +66,7 @@ class UserViewSet(viewsets.GenericViewSet):
     def get_permissions(self):
         if self.action == "change_password" or self.action == "add_post":
             return [permissions.IsAuthenticated()]
-        if self.action == "verify" or self.action == "add_survey" or self.action == "unverified_alumni":
+        if self.action == "verify" or self.action == "unverified_alumni":
             return [permissions.IsAdminUser()]
         if self.action == "create":
             # Lấy dữ liệu từ request.
@@ -111,29 +111,17 @@ class UserViewSet(viewsets.GenericViewSet):
             signal.send_mail_confirmation()
         return Response({"message": "User has been verified successfully!"}, status=status.HTTP_200_OK)
 
-    # @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
-    # def add_post(self, request, pk=None):
-    #     # Lấy người dùng hiện tại từ request
-    #     user = self.get_object()
-    #
-    #     # Tạo serializer với dữ liệu từ request và đặt người dùng hiện tại làm 'user' cho bài viết
-    #     serializer = PostSerializer(data=request.data, context={'request': request})
-    #     if serializer.is_valid():
-    #         serializer.save(user=user)
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     else:
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(methods=['post'], detail=True)
-    def add_post(self, request, pk=None):
-        # Lấy người dùng hiện tại từ request (người dùng đang đăng nhập)
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def add_post(self, request):
+        # Lấy người dùng hiện tại từ request
         user = request.user
 
         # Tạo serializer với dữ liệu từ request và đặt người dùng hiện tại làm 'user' cho bài viết
         serializer = PostSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save(user=user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            post = serializer.save(user=user)
+            # Trả về response chứa dữ liệu của bài viết mới được tạo
+            return Response(PostSerializer(post).data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -148,20 +136,6 @@ class UserViewSet(viewsets.GenericViewSet):
         # Trả về response chứa danh sách bài viết
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['post'], url_path='surveys', detail=False)
-    def add_survey(self, request):
-        if not request.user.is_staff:
-            return Response({"error": "Only admin users can add surveys"}, status=status.HTTP_403_FORBIDDEN)
-
-        # Tạo một đối tượng khảo sát từ dữ liệu yêu cầu
-        serializer = SurveySerializer(data=request.data)
-        if serializer.is_valid():
-            # Thêm thông tin về người dùng vào dữ liệu của khảo sát
-            serializer.validated_data['user'] = request.user
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     @action(methods=['get'], url_path='current-user', url_name='current-user', detail=False)
     def current_user(self, request):
         if request.user.is_authenticated:  # Kiểm tra xem người dùng đã xác thực chưa
@@ -169,25 +143,28 @@ class UserViewSet(viewsets.GenericViewSet):
         else:
             return Response({"message": "User is not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
 
-    @action(methods=['post'], url_path='change_password', detail=True)
-    def change_password(self, request, pk=None):
-        user = self.get_object()
-        password_serializer = PasswordSerializer(data=request.data)
-        if password_serializer.is_valid():
-            old_password = password_serializer.validated_data['old_password']
-            new_password = password_serializer.validated_data['new_password']
+    @action(methods=['post'], detail=False)
+    def change_password(self, request):
+        user = request.user  # Lấy người dùng hiện tại từ request
+        serializer = PasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            old_password = serializer.validated_data['old_password']
+            new_password = serializer.validated_data['new_password']
+
+            # Kiểm tra mật khẩu cũ có chính xác không
             if not user.check_password(old_password):
-                return Response({'message': 'Incorrect old password'}, status=status.HTTP_400_BAD_REQUEST)
-            # Kiểm tra nếu là tài khoản giảng viên
-            if user.role == 'lecturer':
-                # Đặt trường password_change thành True
-                user.password_change = True
+                return Response({'old_password': ['Mật khẩu cũ không chính xác.']}, status=status.HTTP_400_BAD_REQUEST)
+
             # Đặt mật khẩu mới và lưu người dùng
             user.set_password(new_password)
+            user.password_change = True
             user.save()
-            return Response({'message': 'Password has been changed successfully'}, status=status.HTTP_200_OK)
-        else:
-            return Response(password_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'status': 'success', 'message': 'Mật khẩu đã được thay đổi thành công.'},
+                            status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PostViewSet(viewsets.ViewSet,
@@ -205,7 +182,18 @@ class PostViewSet(viewsets.ViewSet,
             return [perms.IsOwner()]
         if self.action.__eq__('destroy'):
             return [perms.IsOwner(), permissions.IsAdminUser()]
+        if self.action == "create" or self.action == "add_comment":
+            return [permissions.IsAuthenticated()]
         return self.permission_classes
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response({"Tạo thành công!"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['post'], detail=True, url_path='block_comment')
     def block_comments_post(self, request, pk):
@@ -233,6 +221,28 @@ class PostViewSet(viewsets.ViewSet,
 
         return Response(CommentSerializer(comments, many=True).data,
                         status=status.HTTP_200_OK)
+
+    from rest_framework import status
+
+    @action(methods=['post'], detail=True)
+    def delete_comment(self, request, pk):
+        post = self.get_object()
+        comment_id = request.data.get('comment_id')
+
+        if not comment_id:
+            return Response({"message": "Vui lòng cung cấp ID của bình luận."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            comment = post.comment_set.get(pk=comment_id)
+        except Comment.DoesNotExist:
+            return Response({"message": "Bình luận không tồn tại."}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.user == post.user or request.user == comment.user:
+            comment.active = False
+            comment.save()
+            return Response({"message": "Bình luận đã được xóa."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Bạn không có quyền xóa bình luận này."}, status=status.HTTP_403_FORBIDDEN)
 
     @action(methods=['get'], detail=True)
     def list_reactions(self, request, pk):
@@ -275,6 +285,14 @@ class SurveyViewSet(viewsets.ModelViewSet):
     queryset = Survey.objects.all()
     serializer_class = SurveySerializer
     permission_classes = [perms.IsAdminUserOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"Tạo thành công!"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['post'], detail=True, url_path='add-question')
     def add_question(self, request, pk=None):
@@ -380,3 +398,5 @@ class StatsViewSet(viewsets.ViewSet):
             })
 
         return stats_data
+
+

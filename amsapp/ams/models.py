@@ -60,7 +60,7 @@ class Survey(Basemodel):
     title = models.CharField(max_length=100)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    closed_at = models.DateTimeField()
+    closed_at = models.DateTimeField(null=True)
 
 
 class SurveyResponse(Basemodel):
